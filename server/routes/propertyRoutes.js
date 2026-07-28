@@ -8,22 +8,25 @@ const {
   getPropertyById,
   updateProperty,
   deleteProperty,
+  searchProperties,
 } = require("../controllers/propertyController");
 
 const { protect } = require("../middleware/authMiddleware");
 // Add Property
-router.post("/",protect, addProperty);
+router.post("/", protect, addProperty);
 
 // Get All Properties
 router.get("/", getAllProperties);
+
+router.get("/search", searchProperties);
 
 // Get Property By ID
 router.get("/:id", getPropertyById);
 
 // Update Property
-router.put("/:id", protect,updateProperty);
+router.put("/:id", protect, updateProperty);
 
 // Delete Property
-router.delete("/:id",protect, deleteProperty);
+router.delete("/:id", protect, deleteProperty);
 
 module.exports = router;

@@ -3,10 +3,8 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
 
-
-
-
-
+const contactRoutes = require("./routes/contactRoutes");
+const favouriteRoutes = require("./routes/favouriteRoutes");
 const propertyRoutes = require("./routes/propertyRoutes");
 const userRoutes = require("./routes/userRoutes");
 // Load environment variables
@@ -20,10 +18,8 @@ app.use(cors());
 app.use(express.json());
 app.use("/api/users", userRoutes);
 app.use("/api/properties", propertyRoutes);
-
-
-
-
+app.use("/api/favourites", favouriteRoutes);
+app.use("/api/contact", contactRoutes);
 
 // Test Route
 app.get("/", (req, res) => {

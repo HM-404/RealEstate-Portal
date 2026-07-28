@@ -42,6 +42,61 @@ const getAllProperties = async (req, res) => {
     });
   }
 };
+const searchProperties = async (req, res) => {
+  try {
+    const { location, propertyType, purpose, minPrice, maxPrice, bedrooms } =
+      req.query;
+
+    let filter = {};
+
+    if (location) {
+      filter.location = {
+        $regex: location,
+        $options: "i",
+      };
+    }
+
+    if (propertyType) {
+      filter.propertyType = propertyType;
+    }
+
+    if (purpose) {
+      filter.purpose = purpose;
+    }
+
+    if (bedrooms) {
+      filter.bedrooms = Number(bedrooms);
+    }
+
+    if (minPrice || maxPrice) {
+      filter.price = {};
+
+      if (minPrice) {
+        filter.price.$gte = Number(minPrice);
+      }
+
+      if (maxPrice) {
+        filter.price.$lte = Number(maxPrice);
+      }
+    }
+
+    const properties = await Property.find(filter).populate(
+      "owner",
+      "name email phone",
+    );
+
+    res.status(200).json({
+      success: true,
+      count: properties.length,
+      properties,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
 
 // ======================
 // Get Single Property
@@ -146,4 +201,5 @@ module.exports = {
   getPropertyById,
   updateProperty,
   deleteProperty,
+  searchProperties,
 };
