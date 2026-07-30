@@ -12,8 +12,9 @@ const {
 } = require("../controllers/propertyController");
 
 const { protect } = require("../middleware/authMiddleware");
+const upload = require("../middleware/uploadMiddleware");
 // Add Property
-router.post("/", protect, addProperty);
+router.post("/", protect, upload.single("image"), addProperty);
 
 // Get All Properties
 router.get("/", getAllProperties);

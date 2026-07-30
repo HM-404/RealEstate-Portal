@@ -2,7 +2,7 @@ import { Routes, Route } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-
+import EditProperty from "./pages/EditProperty";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -13,6 +13,7 @@ import Contact from "./pages/Contact";
 import Profile from "./pages/Profile";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
+import AddProperty from "./pages/AddProperty";
 
 function App() {
   return (
@@ -29,7 +30,9 @@ function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/admin" element={<Admin />} />
+        <Route path="/edit-property/:id" element={<EditProperty />} />
         <Route path="*" element={<NotFound />} />
+        <Route path="/add-property" element={<AddProperty />} />
       </Routes>
 
       <Footer />

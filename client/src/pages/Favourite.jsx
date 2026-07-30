@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import Loader from "../components/Loader";
 import { getFavourites, removeFavourite } from "../services/favouriteService";
 
 function Favourite() {
   const [favourites, setFavourites] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     loadFavourites();
@@ -14,55 +16,86 @@ function Favourite() {
       setFavourites(data.favourites);
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleRemove = async (propertyId) => {
-    await removeFavourite(propertyId);
-    loadFavourites();
+    const confirmRemove = window.confirm(
+      "Remove this property from your favourites?",
+    );
+
+    if (!confirmRemove) return;
+
+    try {
+      await removeFavourite(propertyId);
+      loadFavourites();
+      alert("Property removed from favourites.");
+    } catch (error) {
+      alert(error.response?.data?.message || "Failed to remove favourite.");
+    }
   };
 
+  if (loading) {
+    return <Loader />;
+  }
+
   return (
-    <div className="max-w-7xl mx-auto py-10 px-6">
-      <h1 className="text-4xl font-bold text-red-500 mb-8">
-        My Favourite Properties
-      </h1>
+    <div className="min-h-screen bg-[#FFF8E7] py-10">
+      <div className="max-w-7xl mx-auto px-6">
+        <h1 className="text-5xl font-bold text-[#0F4C4C] text-center mb-10">
+          My Favourite Properties
+        </h1>
 
-      {favourites.length === 0 ? (
-        <p>No favourite properties yet.</p>
-      ) : (
-        <div className="grid md:grid-cols-3 gap-6">
-          {favourites.map((item) => (
-            <div
-              key={item._id}
-              className="bg-white rounded-lg shadow overflow-hidden"
-            >
-              <img
-                src={item.property.images?.[0]}
-                alt={item.property.title}
-                className="h-56 w-full object-cover"
-              />
+        {favourites.length === 0 ? (
+          <div className="bg-white rounded-xl shadow-lg p-12 text-center">
+            <h2 className="text-3xl font-bold text-[#0F4C4C]">
+              No Favourite Properties
+            </h2>
 
-              <div className="p-5">
-                <h2 className="text-xl font-bold">{item.property.title}</h2>
+            <p className="text-gray-600 mt-4">
+              Browse properties and add your favourite ones here.
+            </p>
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {favourites.map((item) => (
+              <div
+                key={item._id}
+                className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition duration-300"
+              >
+                <img
+                  src={item.property.images?.[0]}
+                  alt={item.property.title}
+                  className="w-full h-56 object-cover"
+                />
 
-                <p className="text-gray-500 mt-2">{item.property.location}</p>
+                <div className="p-5">
+                  <h2 className="text-2xl font-bold text-[#0F4C4C]">
+                    {item.property.title}
+                  </h2>
 
-                <p className="text-blue-600 font-bold mt-2">
-                  ₹{item.property.price.toLocaleString()}
-                </p>
+                  <p className="text-gray-600 mt-2">
+                    📍 {item.property.location}
+                  </p>
 
-                <button
-                  onClick={() => handleRemove(item.property._id)}
-                  className="mt-4 bg-red-500 text-white w-full py-2 rounded hover:bg-red-600"
-                >
-                  Remove
-                </button>
+                  <p className="text-[#F4B400] font-bold text-xl mt-3">
+                    ₹{item.property.price.toLocaleString()}
+                  </p>
+
+                  <button
+                    onClick={() => handleRemove(item.property._id)}
+                    className="mt-6 w-full bg-red-500 hover:bg-red-600 text-white py-3 rounded-lg font-semibold transition"
+                  >
+                    Remove from Favourites
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

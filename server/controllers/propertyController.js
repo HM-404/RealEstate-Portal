@@ -5,7 +5,19 @@ const Property = require("../models/Property");
 // ======================
 const addProperty = async (req, res) => {
   try {
-    const property = await Property.create(req.body);
+    const property = await Property.create({
+      title: req.body.title,
+      description: req.body.description,
+      price: req.body.price,
+      propertyType: req.body.propertyType,
+      purpose: req.body.purpose,
+      location: req.body.location,
+      area: req.body.area,
+      bedrooms: req.body.bedrooms,
+      bathrooms: req.body.bathrooms,
+      owner: req.user.id,
+      images: req.file ? [req.file.path] : [],
+    });
 
     res.status(201).json({
       success: true,
