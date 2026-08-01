@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://realestate-backend-tlnp.onrender.com",
+  baseURL: "https://realestate-backend-tlnp.onrender.com/api",
 });
 
 api.interceptors.request.use((config) => {
